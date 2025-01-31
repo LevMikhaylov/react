@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Hello React</title>
+</head>
+<body>
+    <div id="app"></div>
+      
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="text/babel">
+        function Calculator(){
+            function add(){
+              //Getting values from textfields, converting them to integers and calculating total
+                let a = parseInt(document.getElementById("tb1").value)  
+                let b = parseInt(document.getElementById("tb2").value) 
+                alert(a + "+" + b + "=" + parseInt(a+b))
+            }
+            function sub(){
+              //Getting values from textfields, converting them to integers and calculating difference
+                let a = parseInt(document.getElementById("tb1").value) 
+                let b = parseInt(document.getElementById("tb2").value) 
+                alert(a + "-" + b + "=" + parseInt(a-b))
+            }
+            function mul(){
+              //Getting values from textfields, converting them to integers and calculating product
+                let a = parseInt(document.getElementById("tb1").value) 
+                let b = parseInt(document.getElementById("tb2").value) 
+                alert(a + "*" + b + "=" + parseInt(a*b))
+            }
+            function divide(){
+             //Getting values from textfields, converting them to integers and calculating quotient
+                let a = parseInt(document.getElementById("tb1").value) 
+                let b = parseInt(document.getElementById("tb2").value) 
+                alert(a + "/" + b + "=" + parseInt(a/b))
+            }
+        
+          //Making markup of componemts
+            return <div>
+                <h2>Введите первое число</h2>
+                <input type="text" id="tb1"></input>
+                <h2>Введите второе число</h2>
+                <input type="text" id="tb2"></input>
+                <div>
+                <button onClick={add}>+</button>
+                <button onClick={sub}>-</button>
+                <button onClick={mul}>*</button>
+                <button onClick={divide}>/</button>
+                </div>
+            </div>
+
+        }
+        ReactDOM.createRoot(
+            document.getElementById("app")
+        )
+        .render(
+            <Calculator/>
+        );
+    </script>
+</body>
+</html>

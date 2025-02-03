@@ -2,7 +2,21 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Hello React</title>
+    <title>Calculator</title>
+<style>
+       h2{
+         font-family: Times New Roman;
+      }
+      #tb1{ 
+         font-family: Times New Roman;
+      }
+      #tb2{
+         font-family: Times New Roman;
+      }
+      button{
+         font-family: Times New Roman;
+      }
+      </style>
 </head>
 <body>
     <div id="app"></div>
@@ -36,6 +50,12 @@
                 let b = parseInt(document.getElementById("tb2").value) 
                 alert(a + "/" + b + "=" + parseInt(a/b))
             }
+            function power(){
+             //Getting values from textfields, converting them to integers and calculating quotient
+                let a = parseInt(document.getElementById("tb1").value) 
+                let b = parseInt(document.getElementById("tb2").value) 
+                alert(a + "^" + b + "=" + parseInt(Math.pow(a,b)))
+            }
         
           //Making markup of componemts
             return <div>
@@ -48,6 +68,7 @@
                 <button onClick={sub}>-</button>
                 <button onClick={mul}>*</button>
                 <button onClick={divide}>/</button>
+                <button onClick={power}>^</button>
                 </div>
             </div>
 

@@ -12,12 +12,12 @@
   No fixes
 #### 1.4.0 - 03.02.2025
 ####Features
-  * *task-1* - add calculating of factorial
+  * *task-1* - round off the border of the buttons
 ####Fixes
   No fixes
 #### 1.4.1 - 03.02.2025
 #### Features
-  * *task-1* - add calculating of factorial
+  * *task-1* - round off the border of the buttons
 #### Fixes
   * *fix-1* - feature/hotfixes hotfix1 when trying to perform a mathematical operation, leaving the fields empty, a window appears with the text 'NaN + NaN = NaN'
   * *fix-2* - "feature/hotfixes hotfix2 when trying to perform a mathematical operation with a string containing letters, a window appears with the text 'The operation could not be performed because the fields are empty'

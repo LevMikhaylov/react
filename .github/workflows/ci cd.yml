@@ -39,13 +39,13 @@ jobs:
         run: echo "Valid branch"
 
       - name: Run minor version update script
-        id: update minor version
+        id: update-minor-version
         if: |
           contains(steps.parse-data.outputs.current_branch, 'feature')
         run: |
           python version_up.py minor
       - name: Run patch version update script
-        id: update patch version
+        id: update-patch-version
         if: |
           contains(steps.parse-data.outputs.current_branch, 'hotfix')
         run:

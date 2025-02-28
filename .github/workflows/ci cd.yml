@@ -38,11 +38,16 @@ jobs:
           contains(steps.parse-data.outputs.current_branch, 'hotfix')
         run: echo "Valid branch"
 
-      - name: Run version update script
-        id: run-script
+      - name: Run minor version update script
+        id: update minor version
         if: |
-          contains(steps.parse-data.outputs.current_branch, 'feature') || 
-          contains(steps.parse-data.outputs.current_branch, 'hotfix')
+          contains(steps.parse-data.outputs.current_branch, 'feature')
         run: |
           python version_up.py minor
+      - name: Run patch version update script
+        id: update patch version
+        if: |
+          contains(steps.parse-data.outputs.current_branch, 'hotfix')
+        run:
           python version_up.py patch
+

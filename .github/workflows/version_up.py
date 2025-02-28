@@ -1,5 +1,6 @@
 import os
 import datetime
+import sys
 
 # Проверяем, существует ли файл version
 if not os.path.exists('version'):
@@ -10,13 +11,17 @@ if not os.path.exists('version'):
 with open('version', 'r') as f:
     version = f.read().strip()
 
-# Проверяем правильность формата версии
+# Проверка правильности формата версии
 if not all(i.isdigit() for i in version.split('.')):
     print("Некорректный формат версии!")
     exit()
 
-# Чтение параметра обновления
-update_type = input("Введите параметр обновления (major, minor, patch): ")
+# Чтение параметра обновления через аргумент командной строки
+if len(sys.argv) < 2:
+    print("Не указан параметр обновления (major, minor, patch)!")
+    exit()
+
+update_type = sys.argv[1]
 
 # Разделение версии на компоненты
 major, minor, patch = map(int, version.split('.'))

@@ -1,18 +1,48 @@
 name: Version update pipeline
 on:
   pull_request:
-    types: [closed]
+    types: [opened, synchronize, reopened]
     branches:
-    - release
-env:
-  NAME_VERSION_FILE: version
+      - release
+    # Добавляем фильтрацию для веток, содержащих feature или hotfix
+    paths-ignore:
+      - '**/docs/**' # Исключаем документацию, если нужно
+
 jobs:
   validate_branch:
     runs-on: ubuntu-latest
     steps:
-      - name: step1
-        run: 
-          echo "name step1"
-          echo "name step1 - second command"
-      - name: step2
-        run: echo "name step2"
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Parse branch name
+        id: parse-data
+        uses: tj-actions/branch-names@v8
+
+      - name: Print info about actions
+        run: |
+          echo "EVENT_NAME   ${{github.event_name}}"
+          echo "ACTION       ${{github.event.action}}"
+          echo "IS_PULL_REQUEST_MERGED   ${{github.pull_request.merged}}"
+          echo "CURRENT_BRANCH     ${{steps.parse-data.outputs.current_branch}}"
+          echo "REF          ${{github.ref}}"
+          echo "REF_NAME     ${{github.ref_name}}"
+          echo "DEFAULT_BRANCH  ${{steps.parse-data.outputs.default_branch}}"
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate branch (feature/hotfix)
+        id: validate_branch
+        if: |
+          contains(steps.parse-data.outputs.current_branch, 'feature') || 
+          contains(steps.parse-data.outputs.current_branch, 'hotfix')
+        run: echo "Valid branch"
+
+      - name: Run version update script
+        id: run-script
+        if: |
+          contains(steps.parse-data.outputs.current_branch, 'feature') || 
+          contains(steps.parse-data.outputs.current_branch, 'hotfix')
+        run: |
+          python version_up.py minor
+          python version_up.py patch

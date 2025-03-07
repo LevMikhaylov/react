@@ -9,7 +9,7 @@ on:
       - '**/docs/**'
 
 jobs:
-  validate_branch:
+  print_info:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -30,6 +30,7 @@ jobs:
           echo "DEFAULT_BRANCH  ${{steps.parse-data.outputs.default_branch}}"
   security:
     name: (SEC)
+    needs: print_info
     uses: LevMikhaylov/react/.github/workflows/sec.yml@release
   run-script:
     runs-on: ubuntu-latest
@@ -61,3 +62,4 @@ jobs:
     uses: LevMikhaylov/react/.github/workflows/test.yml@release
     with:
       version: alpha
+  

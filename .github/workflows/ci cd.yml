@@ -52,3 +52,9 @@ jobs:
           contains(steps.parse-data.outputs.current_branch, 'hotfix')
         run: |
           python version_up.py patch
+  tests-fixme:
+    name: (TST)
+    needs: run-script
+    uses: LevMikhaylov/react/.github/workflows/test.yml@release
+    with:
+      version: alpha

@@ -1,0 +1,19 @@
+name: Security scanning
+on:
+  workflow_call:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: Lint
+    steps:
+      - name: first-step
+        run: |
+          echo "All normal"
+  saas:
+    runs-on: ubuntu-latest
+    name: SAAS
+    steps:
+      - name: first-step
+        run: |
+          echo "All normal"

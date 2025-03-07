@@ -3,12 +3,12 @@ import datetime
 import sys
 
 # Проверяем, существует ли файл version
-if not os.path.exists('\/version\/version'):
-    with open('\/version\/version', 'w') as f:
+if not os.path.exists('version'):
+    with open('version', 'w') as f:
         f.write('1.5.1')
 
 # Чтение текущей версии из файла
-with open('\/version\/version', 'r') as f:
+with open('version', 'r') as f:
     version = f.read().strip()
 
 # Проверка правильности формата версии

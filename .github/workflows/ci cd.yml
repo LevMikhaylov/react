@@ -61,4 +61,3 @@ jobs:
     uses: LevMikhaylov/react/.github/workflows/test.yml@release
     with:
       version: alpha
-  

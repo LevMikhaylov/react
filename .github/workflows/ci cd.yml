@@ -29,13 +29,14 @@ jobs:
 
       - name: Print info about actions
         run: |
-          echo "EVENT_NAME   ${{github.event_name}}"
-          echo "ACTION       ${{github.event.action}}"
-          echo "IS_PULL_REQUEST_MERGED   ${{github.pull_request.merged}}"
-          echo "CURRENT_BRANCH     ${{steps.parse-data.outputs.current_branch}}"
-          echo "REF          ${{github.ref}}"
-          echo "REF_NAME     ${{github.ref_name}}"
-          echo "DEFAULT_BRANCH  ${{steps.parse-data.outputs.default_branch}}"
+          echo "EVENT_NAME ${{github.event_name}}"
+          echo "ACTION ${{github.event.action}}"
+          echo "IS_PULL_REQUEST_MERGED ${{github.event.pull_request.merged}}"
+          echo "CURRENT_BRANCH ${{steps.parse-data.outputs.current_branch}}"
+          echo "REF ${{github.ref}}"
+          echo "REF_NAME ${{github.ref_name}}"
+          echo "DEFAULT_BRANCH ${{steps.parse-data.outputs.default_branch}}"
+
   security:
     name: (SEC)
     needs: print_info
@@ -54,6 +55,44 @@ jobs:
       - name: Get branch names
         id: branch-names
         uses: tj-actions/branch-names@v8
+
+      # checkout on branch
+      - name: Сheckout on [${{env.RELEASE_BRACH}}]
+        uses: actions/checkout@v2
+
+      # promt path to version file
+      - name: Promt catalog's info
+        run : |
+          echo "path to version file ${{ env.NAME_VERSION_FILE }}"
+
+      # Setup python env
+      - name: Install and Setup python
+        uses: actions/setup-python@v1
+        with:
+          python-version: "3.10"
+
+      # update version if branch start with feature
+      - name: Update version [minor]
+        if: startsWith(steps.branch-names.outputs.current_branch,'feature') && github.event.pull_request.merged == true
+        run:
+          python ${{env.VERSION_UP}} ${{ env.NAME_VERSION_FILE }} ${{ env.MINOR }}
+
+      # update version if bracnh start with feature
+      - name: Update version [patch]
+        if: startsWith(steps.branch-names.outputs.current_branch,'hotfix') && github.event.pull_request.merged == true
+        run:
+          python ${{env.VERSION_UP}} ${{ env.NAME_VERSION_FILE }} ${{ env.PATCH }}
+
+      # generate variables for commit and tag
+      - name: Save Version and Log to env
+        id: get-commit-txt
+        run: |
+          TAG_MSG=$(python ${{env.VERSION_UP}} ${{ env.NAME_VERSION_FILE }} version)
+          LAST_LOG_ENTRY=$(tail -n 1 version_log) # Get last line from version_log
+          COMMIT_MSG="Update version: $LAST_LOG_ENTRY"
+          echo "COMMIT_MSG=${COMMIT_MSG}" >> $GITHUB_ENV
+          echo "TAG_MSG=${TAG_MSG}" >> $GITHUB_OUTPUT
+
 
       # checkout on branch 
       - name: Сheckout on [${{env.RELEASE_BRACH}}]
@@ -91,20 +130,17 @@ jobs:
           echo "COMMIT_MSG=${COMMIT_MSG}" >> $GITHUB_ENV
           echo "TAG_MSG=${TAG_MSG}" >> $GITHUB_ENV
           echo "TAG_MSG=${TAG_MSG}" >> $GITHUB_OUTPUT
-      
-      # setup user which will be commit
-      # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
       - name: Setup git config
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
 
-      # add and push to remote repository 
       - name: Update [version] and put [tag]
         run: |
           git add .
           git commit -m "${{ env.COMMIT_MSG }}"
           git tag -a v${{ env.TAG_MSG }} -m "update tag"
+          git push -u origin ${{ env.RELEASE_BRACH }} --tags
           git push -u origin ${{ env.RELEASE_BRACH }} --tags 
   
   # create changelog file and put data to file 
@@ -118,6 +154,9 @@ jobs:
       - name: Prepare enviroments
         run: |
           echo "update chnagelog file"
+      # checkout on branch
+      - name: Сheckout on [${{env.RELEASE_BRACH}}]
+        uses: actions/checkout@v2
       # checkout on branch 
       - name: Сheckout on [${{env.RELEASE_BRACH}}]
         uses: actions/checkout@v2
@@ -133,6 +172,10 @@ jobs:
       - name: Prepare enviroments
         run: |
           echo "start build application"
+      # checkout on branch
+      - name: Сheckout on [${{env.RELEASE_BRACH}}]
+        uses: actions/checkout@v2
+
       # checkout on branch 
       - name: Сheckout on [${{env.RELEASE_BRACH}}]
         uses: actions/checkout@v2

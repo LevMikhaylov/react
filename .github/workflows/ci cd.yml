@@ -241,7 +241,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./dockerfile
+          file: LevMikahylov/react/dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_LOGIN }}/${{env.REPO_NAME}}:v${{env.tag}}
 
@@ -253,7 +253,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
           repository: ${{ secrets.DOCKER_HUB_LOGIN }}/${{env.CONTAINER_NAME}}
           short-description: ${{ github.event.repository.description }}
-          readme-filepath: ./README.md
+          readme-filepath: LevMikahylov/react/README.md
           enable-url-completion: true
       
       # add label to PR 

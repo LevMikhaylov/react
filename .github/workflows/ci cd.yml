@@ -7,9 +7,18 @@ on:
       - release
     paths-ignore:
       - '**/docs/**'
+env:
+  NAME_VERSION_FILE: ${{ github.workspace }}/version/version
+  RELEASE_BRACH: release
+  MINOR: minor
+  PATCH: patch
+  VERSION_UP: .github/workflows/version_up.py
+  REPO_NAME: ${{ github.event.repository.name }}
+  PR_NUMBER: ${{ github.event.number }}
+  URL_REPO: ${{ github.server_url }}/${{ github.repository }}
 
 jobs:
-  validate_branch:
+  print_info:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -21,43 +30,117 @@ jobs:
 
       - name: Print info about actions
         run: |
-          echo "EVENT_NAME   ${{github.event_name}}"
-          echo "ACTION       ${{github.event.action}}"
-          echo "IS_PULL_REQUEST_MERGED   ${{github.pull_request.merged}}"
-          echo "CURRENT_BRANCH     ${{steps.parse-data.outputs.current_branch}}"
-          echo "REF          ${{github.ref}}"
-          echo "REF_NAME     ${{github.ref_name}}"
-          echo "DEFAULT_BRANCH  ${{steps.parse-data.outputs.default_branch}}"
+          echo "EVENT_NAME ${{github.event_name}}"
+          echo "ACTION ${{github.event.action}}"
+          echo "IS_PULL_REQUEST_MERGED ${{github.event.pull_request.merged}}"
+          echo "CURRENT_BRANCH ${{steps.parse-data.outputs.current_branch}}"
+          echo "REF ${{github.ref}}"
+          echo "REF_NAME ${{github.ref_name}}"
+          echo "DEFAULT_BRANCH ${{steps.parse-data.outputs.default_branch}}"
+
   security:
     name: (SEC)
+    needs: print_info
     uses: LevMikhaylov/react/.github/workflows/sec.yml@release
-  run-script:
-    runs-on: ubuntu-latest
+
+  update-version:
+    name: (VER) Version UP
     needs: security
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{steps.get-commit-txt.outputs.TAG_MSG}}
     steps:
-      - name: Validate branch (feature/hotfix)
-        id: validate_branch
-        if: |
-          contains(steps.parse-data.outputs.current_branch, 'feature') || 
-          contains(steps.parse-data.outputs.current_branch, 'hotfix')
-        run: echo "Valid branch"
 
-      - name: Run minor version update script
-        id: update-minor-version
-        if: |
-          contains(steps.parse-data.outputs.current_branch, 'feature')
-        run: |
-          python version_up.py minor
+      # use special lib for parse branch names
+      - name: Get branch names
+        id: branch-names
+        uses: tj-actions/branch-names@v8
 
-      - name: Run patch version update script
-        id: update-patch-version
-        if: |
-          contains(steps.parse-data.outputs.current_branch, 'hotfix')
+      # checkout on branch
+      - name: Сheckout on [${{env.RELEASE_BRACH}}]
+        uses: actions/checkout@v2
+
+      # promt path to version file
+      - name: Promt catalog's info
+        run : |
+          echo "path to version file ${{ env.NAME_VERSION_FILE }}"
+
+      # Setup python env
+      - name: Install and Setup python
+        uses: actions/setup-python@v1
+        with:
+          python-version: "3.10"
+
+      # update version if branch start with feature
+      - name: Update version [minor]
+        if: startsWith(steps.branch-names.outputs.current_branch,'feature') && github.event.pull_request.merged == true
+        run:
+          python ${{env.VERSION_UP}} ${{ env.NAME_VERSION_FILE }} ${{ env.MINOR }}
+
+      # update version if bracnh start with feature
+      - name: Update version [patch]
+        if: startsWith(steps.branch-names.outputs.current_branch,'hotfix') && github.event.pull_request.merged == true
+        run:
+          python ${{env.VERSION_UP}} ${{ env.NAME_VERSION_FILE }} ${{ env.PATCH }}
+
+      # generate variables for commit and tag
+      - name: Save Version and Log to env
+        id: get-commit-txt
         run: |
-          python version_up.py patch
+          TAG_MSG=$(python ${{env.VERSION_UP}} ${{ env.NAME_VERSION_FILE }} version)
+          LAST_LOG_ENTRY=$(tail -n 1 version_log) # Get last line from version_log
+          COMMIT_MSG="Update version: $LAST_LOG_ENTRY"
+          echo "COMMIT_MSG=${COMMIT_MSG}" >> $GITHUB_ENV
+          echo "TAG_MSG=${TAG_MSG}" >> $GITHUB_OUTPUT
+
+      # setup user which will be commit
+      # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
+      - name: Setup git config
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+
+      # add and push to remote repository
+      - name: Update [version] and put [tag]
+        run: |
+          git add .
+          git commit -m "${{ env.COMMIT_MSG }}"
+          git tag -a v${{ env.TAG_MSG }} -m "update tag"
+          git push -u origin ${{ env.RELEASE_BRACH }} --tags
+
+  changelog-fixme:
+    name: (VER) Chagelog UP
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    needs: update-version
+    steps:
+      - name: Prepare enviroments
+        run: |
+          echo "update chnagelog file"
+      # checkout on branch
+      - name: Сheckout on [${{env.RELEASE_BRACH}}]
+        uses: actions/checkout@v2
+
+  build-fixme:
+    name: (CI) Build
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    needs: changelog-fixme
+    steps:
+      - name: Prepare enviroments
+        run: |
+          echo "start build application"
+      # checkout on branch
+      - name: Сheckout on [${{env.RELEASE_BRACH}}]
+        uses: actions/checkout@v2
+
   tests-fixme:
     name: (TST)
-    needs: run-script
+    needs: build-fixme
     uses: LevMikhaylov/react/.github/workflows/test.yml@release
     with:
       version: alpha

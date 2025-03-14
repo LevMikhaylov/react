@@ -16,6 +16,7 @@ env:
   REPO_NAME: ${{ github.event.repository.name }}
   PR_NUMBER: ${{ github.event.number }}
   URL_REPO: ${{ github.server_url }}/${{ github.repository }}
+
 jobs:
   print_info:
     runs-on: ubuntu-latest
@@ -41,6 +42,7 @@ jobs:
     name: (SEC)
     needs: print_info
     uses: LevMikhaylov/react/.github/workflows/sec.yml@release
+
   update-version:
     name: (VER) Version UP
     needs: security
@@ -49,9 +51,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       tag: ${{steps.get-commit-txt.outputs.TAG_MSG}}
-    steps:      
+    steps:
 
-      # use special lib for parse branch names 
+      # use special lib for parse branch names
       - name: Get branch names
         id: branch-names
         uses: tj-actions/branch-names@v8
@@ -93,57 +95,21 @@ jobs:
           echo "COMMIT_MSG=${COMMIT_MSG}" >> $GITHUB_ENV
           echo "TAG_MSG=${TAG_MSG}" >> $GITHUB_OUTPUT
 
-
-      # checkout on branch 
-      - name: Сheckout on [${{env.RELEASE_BRACH}}]
-        uses: actions/checkout@v2
-      
-      # promt path to version file 
-      - name: Promt catalog's info
-        run : |
-          echo "path to version file ${{ env.NAME_VERSION_FILE }}"
-          
-      # Setup python env 
-      - name: Install and Setup python 
-        uses: actions/setup-python@v1
-        with:
-          python-version: "3.10"
-    
-      # update version if branch start with feature
-      - name: Update version [minor]
-        if: startsWith(steps.branch-names.outputs.current_branch,'feature')
-        run: 
-          python ${{env.VERSION_UP}} ${{ env.NAME_VERSION_FILE }} ${{ env.MINOR }}
- 
-      # update version if bracnh start with feature
-      - name: Update version [patch]
-        if: startsWith(steps.branch-names.outputs.current_branch,'hotfix')
-        run:
-          python ${{env.VERSION_UP}} ${{ env.NAME_VERSION_FILE }} ${{ env.PATCH }}
-      
-      # generate variables for commit and tag 
-      - name: Save Version and Log to env
-        id: get-commit-txt
-        run: | 
-          COMMIT_MSG=$(python ${{env.VERSION_UP}} ${{ env.NAME_VERSION_FILE }} version_log -1)
-          TAG_MSG=$(python ${{env.VERSION_UP}} ${{ env.NAME_VERSION_FILE }} version)
-          echo "COMMIT_MSG=${COMMIT_MSG}" >> $GITHUB_ENV
-          echo "TAG_MSG=${TAG_MSG}" >> $GITHUB_ENV
-          echo "TAG_MSG=${TAG_MSG}" >> $GITHUB_OUTPUT
+      # setup user which will be commit
+      # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
       - name: Setup git config
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
 
+      # add and push to remote repository
       - name: Update [version] and put [tag]
         run: |
           git add .
           git commit -m "${{ env.COMMIT_MSG }}"
           git tag -a v${{ env.TAG_MSG }} -m "update tag"
           git push -u origin ${{ env.RELEASE_BRACH }} --tags
-          git push -u origin ${{ env.RELEASE_BRACH }} --tags 
-  
-  # create changelog file and put data to file 
+
   changelog-fixme:
     name: (VER) Chagelog UP
     permissions:
@@ -157,11 +123,7 @@ jobs:
       # checkout on branch
       - name: Сheckout on [${{env.RELEASE_BRACH}}]
         uses: actions/checkout@v2
-      # checkout on branch 
-      - name: Сheckout on [${{env.RELEASE_BRACH}}]
-        uses: actions/checkout@v2
 
-  # create changelog file and put data to file 
   build-fixme:
     name: (CI) Build
     permissions:
@@ -176,13 +138,9 @@ jobs:
       - name: Сheckout on [${{env.RELEASE_BRACH}}]
         uses: actions/checkout@v2
 
-      # checkout on branch 
-      - name: Сheckout on [${{env.RELEASE_BRACH}}]
-        uses: actions/checkout@v2
   tests-fixme:
     name: (TST)
     needs: build-fixme
     uses: LevMikhaylov/react/.github/workflows/test.yml@release
     with:
       version: alpha
-  

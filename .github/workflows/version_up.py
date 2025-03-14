@@ -3,12 +3,12 @@ import datetime
 import sys
 
 # Проверяем, существует ли файл version
-if not os.path.exists('version'):
+if not os.path.exists('.github/workflows/version'):
     with open('version', 'w') as f:
         f.write('1.5.1')
 
 # Чтение текущей версии из файла
-with open('version', 'r') as f:
+with open('.github/workflows/version', 'r') as f:
     version = f.read().strip()
 
 # Проверка правильности формата версии
@@ -43,12 +43,18 @@ else:
 new_version = f"{major}.{minor}.{patch}"
 
 # Запись новой версии в файл version
-with open('version', 'w') as f:
+with open('.github/workflows/version', 'w') as f:
     f.write(new_version)
+
+# Define the log file path
+log_file_path = '.github/workflows/version_log'
 
 # Запись в файл version_log
 current_time = datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S.%f")[:-3]
-with open('version_log', 'a') as f:
+with open(log_file_path, 'a') as f:
     f.write(f"[{new_version}] <- [{version}] [{current_time}] {update_type} update\n")
 
-print(f"Версия обновлена на {new_version}")
+if len(sys.argv) == 3 and sys.argv[2] == "version":
+    print(new_version)
+else:
+    print(f"Версия обновлена на {new_version}")

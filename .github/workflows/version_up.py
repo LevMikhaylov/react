@@ -5,7 +5,7 @@ import sys
 # Проверяем, существует ли файл version
 if not os.path.exists('version'):
     with open('version', 'w') as f:
-        f.write('1.0.0')
+        f.write('1.5.1')
 
 # Чтение текущей версии из файла
 with open('version', 'r') as f:

@@ -332,7 +332,7 @@ jobs:
   deploy:
     name: Deploy
     needs: [final-notify,update-version]
-    uses: LevMikhaylov/react/.github/.github/workflows/deploy.yml@release
+    uses: LevMikhaylov/react/.github/workflows/deploy.yml@release
     with: 
       version: v${{needs.update-version.outputs.tag}}
       container_name: react

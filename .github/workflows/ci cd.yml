@@ -57,13 +57,13 @@ jobs:
   security: 
     name: (SEC)
     needs: pre-merge-check
-    uses: LevMikahylov/react/.github/workflows/sec.yml@release # attention @branch-name is recomnneded
+    uses: LevMikhaylov/react/.github/workflows/sec.yml@release # attention @branch-name is recomnneded
 
     # create changelog file and put data to file 
   tests:
     name: (TST)
     needs: security
-    uses: LevMikahylov/react/.github/workflows/test.yml@release
+    uses: LevMikhaylov/react/.github/workflows/test.yml@release
     with: 
       version: alpha
 
@@ -203,7 +203,7 @@ jobs:
   build:
     name: (BUILD)
     needs: changelog
-    uses: LevMikahylov/react/.github/workflows/build.yml@release
+    uses: LevMikhaylov/react/.github/workflows/build.yml@release
     permissions:
       contents: write
       pull-requests: write
@@ -253,7 +253,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
           repository: ${{ secrets.DOCKER_HUB_LOGIN }}/${{env.CONTAINER_NAME}}
           short-description: ${{ github.event.repository.description }}
-          readme-filepath: LevMikahylov/react/README.md
+          readme-filepath: LevMikhaylov/react/README.md
           enable-url-completion: true
       
       # add label to PR 

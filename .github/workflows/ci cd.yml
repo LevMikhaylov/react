@@ -202,7 +202,7 @@ jobs:
     uses: LevMikahylov/react/.github/workflows/build.yml@release
     permissions:
       contents: write
-      pull-requests: write
+      pull-requests: write 
       repository-projects: write
       id-token: write
 

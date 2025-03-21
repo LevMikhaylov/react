@@ -23,7 +23,7 @@ env:
   REPO_NAME: ${{ github.event.repository.name }}
   PR_NUMBER: ${{ github.event.number }}
   URL_REPO: ${{ github.server_url }}/${{ github.repository }}
-  CONTAINER_NAME: land_devops
+  CONTAINER_NAME: react
   CHANGELOG_FILE: changelog.md
 
 #JOBS list for update versions 
@@ -57,13 +57,13 @@ jobs:
   security: 
     name: (SEC)
     needs: pre-merge-check
-    uses: LevMikahylov/react/.github/workflows/sec.yml@release # attention @branch-name is recomnneded
+    uses: LevMikhaylov/react/.github/workflows/sec.yml@release # attention @branch-name is recomnneded
 
     # create changelog file and put data to file 
   tests:
     name: (TST)
     needs: security
-    uses: LevMikahylov/react/.github/workflows/test.yml@release
+    uses: LevMikhaylov/react/.github/workflows/test.yml@release
     with: 
       version: alpha
 

@@ -341,4 +341,5 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-      repository-projects: w
+      repository-projects: write
+      id-token: write

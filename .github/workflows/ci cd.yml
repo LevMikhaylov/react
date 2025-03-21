@@ -199,7 +199,7 @@ jobs:
   build:
     name: (BUILD)
     needs: changelog
-    uses: LevMikahylov/react/.github/workflows/build.yml@release
+    uses: LevMikhaylov/react/.github/workflows/build.yml@release
     permissions:
       contents: write
       pull-requests: write 

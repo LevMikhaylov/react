@@ -20,4 +20,17 @@ jobs:
       - name: Run Test
         run: |
           echo "simple run test"
-
+  integrational:
+    name: Integrational_test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Test
+        run: |
+          echo "simple run integrational_test
+  load:
+    name: Load_test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Test
+        run: |
+          echo "simple run load_test"

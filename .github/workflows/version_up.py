@@ -40,6 +40,7 @@ elif update_type == "patch":
     print(f"Update type: {update_type}")
     patch += 1
 else:
+    print(f"Update type: {update_type}")
     print("Некорректный параметр обновления!")
     exit()
 

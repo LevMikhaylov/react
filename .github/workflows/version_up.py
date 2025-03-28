@@ -21,7 +21,7 @@ if len(sys.argv) < 2:
     print("Не указан параметр обновления (major, minor, patch)!")
     exit()
 
-update_type = sys.argv[1]
+update_type = sys.argv[2]
 
 # Разделение версии на компоненты
 major, minor, patch = map(int, version.split('.'))

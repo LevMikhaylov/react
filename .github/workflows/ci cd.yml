@@ -151,6 +151,7 @@ jobs:
       contents: write
       pull-requests: write
       repository-projects: write
+      issues: write   # Добавлено разрешение для меток
       id-token: write
     runs-on: ubuntu-latest
     needs: update-version

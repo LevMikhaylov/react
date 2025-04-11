@@ -58,7 +58,7 @@ current_time = datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S.%f")[:-3]
 with open(log_file_path, 'a') as f:
     f.write(f"[{new_version}] <- [{version}] [{current_time}] {update_type} update\n")
 
-if len(sys.argv) == 3 and sys.argv[2] == "version":
+if len(sys.argv) == 3 and sys.argv[2] == "minor" or len(sys.argv) == 3 and sys.argv[2] == "patch":
     print(new_version)
 else:
     print(f"Версия обновлена на {new_version}")

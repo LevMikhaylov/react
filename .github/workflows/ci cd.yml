@@ -13,7 +13,6 @@ on:
     types: [closed]
     branches:
       - release
-        
 env:
   NAME_VERSION_FILE: ${{ github.workspace }}/version
   RELEASE_BRACH: release
@@ -57,7 +56,7 @@ jobs:
   security: 
     name: (SEC)
     needs: pre-merge-check
-    uses: makarmarkov/land_devops/.github/workflows/sec.yml@release # attention @branch-name is recomnneded
+    uses: LevMikhaylov/react/.github/workflows/sec.yml@release # attention @branch-name is recomnneded
 
     # create changelog file and put data to file 
   tests:

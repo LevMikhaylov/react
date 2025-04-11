@@ -114,7 +114,7 @@ jobs:
       - name: Save Version and Log to env
         id: get-commit-txt
         run: | 
-          COMMIT_MSG=$(python ${{env.VERSION_UP}} ${{ env.NAME_VERSION_FILE }} version_log -1)
+          COMMIT_MSG=$(python ${{env.VERSION_UP}} ${{ env.NAME_VERSION_FILE }} version_log)
           TAG_MSG=$(python ${{env.VERSION_UP}} ${{ env.NAME_VERSION_FILE }} version)
           echo "COMMIT_MSG=${COMMIT_MSG}" >> $GITHUB_ENV
           echo "TAG_MSG=${TAG_MSG}" >> $GITHUB_ENV

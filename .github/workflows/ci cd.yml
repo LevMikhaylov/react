@@ -5,10 +5,8 @@ on:
     types: [closed]
     branches:
       - release
-    paths-ignore:
-      - '**/docs/**'
 env:
-  NAME_VERSION_FILE: ${{ github.workspace }}/version/version
+  NAME_VERSION_FILE: ${{ github.workspace }}/version
   RELEASE_BRACH: release
   MINOR: minor
   PATCH: patch

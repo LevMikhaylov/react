@@ -30,12 +30,9 @@ major, minor, patch = map(int, version.split('.'))
 if update_type == "major":
     #print(f"Update type: {update_type}")
     major += 1
-    minor = 0
-    patch = 0
 elif update_type == "minor":
     #print(f"Update type: {update_type}")
     minor += 1
-    patch = 0
 elif update_type == "patch":
     #print(f"Update type: {update_type}")
     patch += 1

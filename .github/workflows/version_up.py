@@ -21,25 +21,26 @@ if len(sys.argv) < 2:
     print("Не указан параметр обновления (major, minor, patch)!")
     exit()
 
-update_type = sys.argv[1]
+update_type = sys.argv[2]
 
 # Разделение версии на компоненты
 major, minor, patch = map(int, version.split('.'))
 
 # Инкрементирование версии
 if update_type == "major":
-    print(f"Update type: {update_type}")
+    #print(f"Update type: {update_type}")
     major += 1
     minor = 0
     patch = 0
 elif update_type == "minor":
-    print(f"Update type: {update_type}")
+    #print(f"Update type: {update_type}")
     minor += 1
     patch = 0
 elif update_type == "patch":
-    print(f"Update type: {update_type}")
+    #print(f"Update type: {update_type}")
     patch += 1
 else:
+    #print(f"Update type: {update_type}")
     print("Некорректный параметр обновления!")
     exit()
 
@@ -57,7 +58,7 @@ current_time = datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S.%f")[:-3]
 with open(log_file_path, 'a') as f:
     f.write(f"[{new_version}] <- [{version}] [{current_time}] {update_type} update\n")
 
-if len(sys.argv) == 3 and sys.argv[2] == "version":
+if len(sys.argv) == 3 and sys.argv[2] == "minor" or len(sys.argv) == 3 and sys.argv[2] == "patch":
     print(new_version)
 else:
     print(f"Версия обновлена на {new_version}")

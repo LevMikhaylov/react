@@ -7,6 +7,7 @@ jobs:
     permissions:
       pull-requests: write
       repository-projects: write
+      issues: write   # Добавлено разрешение для меток
     runs-on: ubuntu-latest
     steps:
       - name: Prepare enviroments

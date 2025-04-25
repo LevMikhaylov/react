@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react-1320
+  namespace: react-namespace
+  labels:
+    app: react-1320
+    version: "1.32.0"
+spec:
+  replicas: 3
+  strategy:
+
+
+
+
+
+
+
+
+
+
+
+selector:
+  matchLabels:
+    app: react-1320
+    version: "1.32.0"
+template:
+  metadata:
+    labels:
+      app: react-1320
+    version: "1.32.0"
+  spec:
+    containers:
+    - name: react-container-1320
+      image: levmikhaylov/react:v1.32.0
+      ports:
+      - containerPort: 80
+      - containerPort: 22
+      - containerPort: 776
+      resources:
+        limits:
+          memory: "300Mi"
+          cpu: "20m"
+        requests:
+          memory: "100Mi"
+          cpu: "10m"

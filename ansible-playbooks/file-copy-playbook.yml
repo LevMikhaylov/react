@@ -1,0 +1,8 @@
+---
+- name: Копирование файла между каталогами
+  hosts: localhost  
+  tasks:
+    - name: Копируем файл с помощью модуля copy
+      ansible.builtin.copy:
+        src: /home/u9855levm2006/testfile.txt
+        dest: /home/u9855levm2006/test
